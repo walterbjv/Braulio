@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Braulin?</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f4f8;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 2rem;
+    }
+
+    button {
+      padding: 1rem 3rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .si {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .no {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #respuesta {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>Eras un Braulin?</h1>
+  <div class="buttons">
+    <button class="si" onclick="responder('Si')">Si</button>
+    <button class="no" onclick="responder('No')">No</button>
+  </div>
+  <p id="respuesta"></p>
+
+  <script>
+    function responder(opcion) {
+      const msg = opcion === 'Si'
+        ? 'Confirmado, eres un Braulin!'
+        : 'No eres un Braulin... o si?';
+      document.getElementById('respuesta').textContent = msg;
+    }
+  </script>
+</body>
+</html>
