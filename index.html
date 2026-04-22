@@ -57,6 +57,15 @@
       font-weight: bold;
       color: #444;
     }
+
+    #flotante {
+      position: fixed;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #e63946;
+      pointer-events: none;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -67,6 +76,8 @@
   </div>
   <p id="respuesta"></p>
 
+  <div id="flotante">444</div>
+
   <script>
     function responder(opcion) {
       const msg = opcion === 'Si'
@@ -74,6 +85,30 @@
         : 'No eres un Braulin... o si?';
       document.getElementById('respuesta').textContent = msg;
     }
+
+    const el = document.getElementById('flotante');
+    let x = Math.random() * (window.innerWidth - 80);
+    let y = Math.random() * (window.innerHeight - 60);
+    let dx = 2.5;
+    let dy = 2;
+
+    function animar() {
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+
+      x += dx;
+      y += dy;
+
+      if (x + w >= window.innerWidth || x <= 0) dx = -dx;
+      if (y + h >= window.innerHeight || y <= 0) dy = -dy;
+
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+
+      requestAnimationFrame(animar);
+    }
+
+    animar();
   </script>
 </body>
 </html>
