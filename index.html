@@ -63,8 +63,49 @@
       font-size: 3rem;
       font-weight: bold;
       color: #e63946;
-      pointer-events: none;
       user-select: none;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    @keyframes aura-pulse {
+      0%   { text-shadow: 0 0 10px #fff700, 0 0 20px #fff700, 0 0 40px #ffd000, 0 0 80px #ffaa00; transform: scale(1); }
+      50%  { text-shadow: 0 0 20px #fff, 0 0 40px #fff700, 0 0 80px #ffd000, 0 0 120px #ffaa00; transform: scale(1.15); }
+      100% { text-shadow: 0 0 10px #fff700, 0 0 20px #fff700, 0 0 40px #ffd000, 0 0 80px #ffaa00; transform: scale(1); }
+    }
+
+    #flotante.supersayajin {
+      color: #fff700 !important;
+      animation: aura-pulse 0.3s ease-in-out infinite;
+    }
+
+    .rayo {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9;
+      font-size: 1.4rem;
+      animation: rayo-anim 0.25s ease-out forwards;
+    }
+
+    @keyframes rayo-anim {
+      0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+    }
+
+    .particula {
+      position: fixed;
+      pointer-events: none;
+      z-index: 8;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff700;
+      animation: particula-anim 0.6s ease-out forwards;
+    }
+
+    @keyframes particula-anim {
+      0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
     }
   </style>
 </head>
@@ -91,6 +132,7 @@
     let y = Math.random() * (window.innerHeight - 60);
     let dx = 2.5;
     let dy = 2;
+    let detenido = false;
 
     const colores = ['#e63946','#2196f3','#4caf50','#ff9800','#9c27b0','#00bcd4','#ff5722','#ffeb3b'];
     let colorIndex = 0;
@@ -100,18 +142,80 @@
       el.style.color = colores[colorIndex];
     }
 
+    function lanzarRayos(cx, cy) {
+      const simbolos = ['⚡','✦','★','⚡','✦'];
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * 2 * Math.PI;
+        const dist = 60 + Math.random() * 60;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+
+        const rayo = document.createElement('div');
+        rayo.className = 'rayo';
+        rayo.textContent = simbolos[i % simbolos.length];
+        rayo.style.left = (cx - 12) + 'px';
+        rayo.style.top  = (cy - 12) + 'px';
+        rayo.style.color = Math.random() > 0.5 ? '#fff700' : '#ffffff';
+        rayo.style.setProperty('--tx', tx + 'px');
+        rayo.style.setProperty('--ty', ty + 'px');
+        document.body.appendChild(rayo);
+        setTimeout(() => rayo.remove(), 400);
+      }
+
+      for (let i = 0; i < 20; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 40 + Math.random() * 80;
+        const p = document.createElement('div');
+        p.className = 'particula';
+        p.style.left = (cx - 3) + 'px';
+        p.style.top  = (cy - 3) + 'px';
+        p.style.background = Math.random() > 0.5 ? '#fff700' : '#ffd000';
+        p.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+        p.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 700);
+      }
+    }
+
+    let rayoInterval = null;
+
+    el.addEventListener('click', () => {
+      if (detenido) return;
+      detenido = true;
+      el.classList.add('supersayajin');
+
+      const disparar = () => {
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        lanzarRayos(cx, cy);
+      };
+
+      disparar();
+      rayoInterval = setInterval(disparar, 300);
+
+      setTimeout(() => {
+        clearInterval(rayoInterval);
+        el.classList.remove('supersayajin');
+        el.style.color = colores[colorIndex];
+        detenido = false;
+      }, 2000);
+    });
+
     function animar() {
-      const w = el.offsetWidth;
-      const h = el.offsetHeight;
+      if (!detenido) {
+        const w = el.offsetWidth;
+        const h = el.offsetHeight;
 
-      x += dx;
-      y += dy;
+        x += dx;
+        y += dy;
 
-      if (x + w >= window.innerWidth || x <= 0) { dx = -dx; cambiarColor(); }
-      if (y + h >= window.innerHeight || y <= 0) { dy = -dy; cambiarColor(); }
+        if (x + w >= window.innerWidth || x <= 0) { dx = -dx; cambiarColor(); }
+        if (y + h >= window.innerHeight || y <= 0) { dy = -dy; cambiarColor(); }
 
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+      }
 
       requestAnimationFrame(animar);
     }
