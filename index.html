@@ -92,6 +92,14 @@
     let dx = 2.5;
     let dy = 2;
 
+    const colores = ['#e63946','#2196f3','#4caf50','#ff9800','#9c27b0','#00bcd4','#ff5722','#ffeb3b'];
+    let colorIndex = 0;
+
+    function cambiarColor() {
+      colorIndex = (colorIndex + 1) % colores.length;
+      el.style.color = colores[colorIndex];
+    }
+
     function animar() {
       const w = el.offsetWidth;
       const h = el.offsetHeight;
@@ -99,8 +107,8 @@
       x += dx;
       y += dy;
 
-      if (x + w >= window.innerWidth || x <= 0) dx = -dx;
-      if (y + h >= window.innerHeight || y <= 0) dy = -dy;
+      if (x + w >= window.innerWidth || x <= 0) { dx = -dx; cambiarColor(); }
+      if (y + h >= window.innerHeight || y <= 0) { dy = -dy; cambiarColor(); }
 
       el.style.left = x + 'px';
       el.style.top = y + 'px';
